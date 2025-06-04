@@ -8,6 +8,9 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 
+  <!-- AOSのCSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
   <style>
     body {
       font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -70,16 +73,25 @@
   </style>
 </head>
 <body>
-  <header>
+  <header data-aos="fade-down">
     <h1>学校行事カレンダー</h1>
-    <div class="button-container">
+    <div class="button-container" data-aos="fade-up">
       <a href="#calendar" class="button">カレンダーを見る</a>
       <a href="https://calendar.google.com" target="_blank" class="button">Googleカレンダー</a>
     </div>
   </header>
 
-  <div class="calendar-container" id="calendar">
+  <div class="calendar-container" id="calendar" data-aos="zoom-in">
     <iframe src="https://calendar.google.com/calendar/embed?src=c_31b7338f5e876ae8c858857673e92338b9fd65fa617f06056e1bf33fe834499d%40group.calendar.google.com&ctz=Asia%2FTokyo"></iframe>
   </div>
+
+  <!-- AOSのJavaScript -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  </script>
 </body>
 </html>
