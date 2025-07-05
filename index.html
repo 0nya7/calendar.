@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>学校行事カレンダー</title>
 
   <!-- フォント & AOS -->
@@ -100,6 +100,17 @@
       transform: scale(1.05);
     }
 
+    select.button {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding-right: 30px;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,10" fill="%23666"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 10px;
+    }
+
     .calendar-container, .memo-container {
       max-width: 800px;
       margin: 2em auto;
@@ -140,12 +151,16 @@
     <h1>学校行事カレンダー</h1>
     <div id="today-date"></div>
     <div class="button-container" data-aos="fade-up">
-      <a href="#calendar" class="button">カレンダーを見る</a>
       <a href="https://calendar.google.com" target="_blank" class="button">Googleカレンダー</a>
       <button class="button" onclick="toggleTheme()">🌙 / ☀️</button>
-      <button class="button" onclick="setTheme('pink')">🌸 ピンク</button>
-      <button class="button" onclick="setTheme('blue')">💙 ブルー</button>
-      <button class="button" onclick="setTheme('yellow')">🌼 イエロー</button>
+
+      <!-- テーマセレクトボックス -->
+      <select id="themeSelect" class="button" onchange="selectTheme(this)">
+        <option value="">🌈 テーマを選ぶ</option>
+        <option value="pink">🌸 ピンク</option>
+        <option value="blue">💙 ブルー</option>
+        <option value="yellow">🌼 イエロー</option>
+      </select>
     </div>
   </header>
 
@@ -154,7 +169,7 @@
   </div>
 
   <div class="memo-container" data-aos="fade-up">
-    <h2>メモ欄</h2>
+    <h2>📝 メモ欄</h2>
     <textarea id="memo" placeholder="ここにメモを書いてね！"></textarea>
   </div>
 
@@ -165,46 +180,45 @@
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     document.getElementById("today-date").textContent =
-      `今日の日付：${yyyy}年${mm}月${dd}日`;
+      `📅 今日の日付：${yyyy}年${mm}月${dd}日`;
   </script>
 
-  <!-- AOSアニメーションJS -->
+  <!-- AOSアニメーション -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
 
-  <!-- テーマ切り替えJS -->
+  <!-- テーマ・メモ機能 -->
   <script>
     function toggleTheme() {
       document.body.classList.toggle("dark");
       localStorage.setItem("darkMode", document.body.classList.contains("dark"));
     }
 
-    function setTheme(theme) {
+    function selectTheme(select) {
+      const theme = select.value;
+      if (!theme) return;
       document.body.classList.remove("pink", "blue", "yellow");
       document.body.classList.add(theme);
       localStorage.setItem("themeColor", theme);
     }
 
-    // 初期テーマ反映
     window.onload = () => {
       if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark");
       }
-
       const savedTheme = localStorage.getItem("themeColor");
       if (savedTheme) {
         document.body.classList.add(savedTheme);
+        document.getElementById("themeSelect").value = savedTheme;
       }
-
       const savedMemo = localStorage.getItem("memoText");
       if (savedMemo) {
         document.getElementById("memo").value = savedMemo;
       }
     };
 
-    // メモ保存
     document.getElementById("memo").addEventListener("input", function () {
       localStorage.setItem("memoText", this.value);
     });
