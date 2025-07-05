@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>学校行事カレンダー</title>
 
-  <!-- 丸っこいフォント -->
+  <!-- フォント & AOS -->
   <link href="https://fonts.googleapis.com/css2?family=Rounded+Mplus+1c&display=swap" rel="stylesheet">
-  <!-- AOS -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
@@ -29,6 +28,24 @@
       --button-border: #888;
       --button-text: #eee;
       --card-bg: #2a2a2a;
+    }
+
+    body.pink {
+      --bg: #fff0f5;
+      --header-bg: #f06292;
+      --button-bg: #f8bbd0;
+    }
+
+    body.blue {
+      --bg: #e0f7fa;
+      --header-bg: #4fc3f7;
+      --button-bg: #b3e5fc;
+    }
+
+    body.yellow {
+      --bg: #fffde7;
+      --header-bg: #fff176;
+      --button-bg: #fff9c4;
     }
 
     body {
@@ -83,7 +100,7 @@
       transform: scale(1.05);
     }
 
-    .calendar-container {
+    .calendar-container, .memo-container {
       max-width: 800px;
       margin: 2em auto;
       background: var(--card-bg);
@@ -99,6 +116,23 @@
       border: none;
       border-radius: 8px;
     }
+
+    .memo-container h2 {
+      margin-top: 0;
+      font-size: 1.4em;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-size: 1em;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      background: var(--bg);
+      color: var(--text);
+    }
   </style>
 </head>
 <body>
@@ -109,11 +143,19 @@
       <a href="#calendar" class="button">カレンダーを見る</a>
       <a href="https://calendar.google.com" target="_blank" class="button">Googleカレンダー</a>
       <button class="button" onclick="toggleTheme()">🌙 / ☀️</button>
+      <button class="button" onclick="setTheme('pink')">🌸 ピンク</button>
+      <button class="button" onclick="setTheme('blue')">💙 ブルー</button>
+      <button class="button" onclick="setTheme('yellow')">🌼 イエロー</button>
     </div>
   </header>
 
   <div class="calendar-container" id="calendar" data-aos="zoom-in">
     <iframe src="https://calendar.google.com/calendar/embed?src=c_31b7338f5e876ae8c858857673e92338b9fd65fa617f06056e1bf33fe834499d%40group.calendar.google.com&ctz=Asia%2FTokyo"></iframe>
+  </div>
+
+  <div class="memo-container" data-aos="fade-up">
+    <h2>メモ欄</h2>
+    <textarea id="memo" placeholder="ここにメモを書いてね！"></textarea>
   </div>
 
   <!-- 日付スクリプト -->
@@ -123,32 +165,49 @@
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     document.getElementById("today-date").textContent =
-      ` 今日の日付：${yyyy}年${mm}月${dd}日`;
+      `今日の日付：${yyyy}年${mm}月${dd}日`;
   </script>
 
   <!-- AOSアニメーションJS -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    AOS.init({
-      duration: 1000,
-      once: true
-    });
+    AOS.init({ duration: 1000, once: true });
   </script>
 
   <!-- テーマ切り替えJS -->
   <script>
     function toggleTheme() {
       document.body.classList.toggle("dark");
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark"));
     }
 
-    // 初期表示で前回のテーマを反映
+    function setTheme(theme) {
+      document.body.classList.remove("pink", "blue", "yellow");
+      document.body.classList.add(theme);
+      localStorage.setItem("themeColor", theme);
+    }
+
+    // 初期テーマ反映
     window.onload = () => {
-      if (localStorage.getItem("theme") === "dark") {
+      if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark");
       }
+
+      const savedTheme = localStorage.getItem("themeColor");
+      if (savedTheme) {
+        document.body.classList.add(savedTheme);
+      }
+
+      const savedMemo = localStorage.getItem("memoText");
+      if (savedMemo) {
+        document.getElementById("memo").value = savedMemo;
+      }
     };
+
+    // メモ保存
+    document.getElementById("memo").addEventListener("input", function () {
+      localStorage.setItem("memoText", this.value);
+    });
   </script>
 </body>
 </html>
-
